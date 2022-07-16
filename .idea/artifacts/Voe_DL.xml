@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Voe-DL">
+    <output-path>$PROJECT_DIR$/build</output-path>
+    <root id="archive" name="Voe-DL.jar">
+      <element id="module-output" name="VOE-DL" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/commons-io/commons-io/2.11.0/commons-io-2.11.0.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
