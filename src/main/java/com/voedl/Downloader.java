@@ -1,5 +1,7 @@
 package com.voedl;
 
+import net.lingala.zip4j.ZipFile;
+import net.lingala.zip4j.exception.ZipException;
 import org.apache.commons.io.IOUtils;
 
 
@@ -16,7 +18,19 @@ import java.util.logging.Level;
 public class Downloader {
     String title = "";
     public Downloader(String url) {
-        if(new File("down").exists()) {
+        if(!PublicValues.title.equals("")) {
+            if(!PublicValues.title.contains(".mp4")) {
+                System.out.println(new Language().get("voedl.error.wrongtitle"));
+                new Utils().finalClean();
+                System.exit(1);
+            }
+            if(new File(PublicValues.title).exists()) {
+                System.out.println(new Language().get("voedl.error.exists"));
+                new Utils().finalClean();
+                System.exit(1);
+            }
+        }
+        if (new File("down").exists()) {
             new Utils().clean();
         }
         try {
@@ -29,6 +43,7 @@ public class Downloader {
         // https://delivery-node-bata.voe-network.net/hls/6oarme6g5a23cszcr3emzizpwvmo5ydm6co3jrdtjsw5cedefeb6wytq2jia/master.m3u8
         InputStream in = new URL(url).openStream();
         String content;
+        System.out.println(new Language().get("voedl.download.index"));
         boolean out = false;
         try {
             content = IOUtils.toString(in, StandardCharsets.UTF_8);
@@ -47,13 +62,16 @@ public class Downloader {
                 if(data.contains("\"hls\"")) {
                     hls = data;
                 }
-                if(data.contains("<title>")) {
-                    title = data.replace("<title>", "").replace("</title>", "").replace("Watch ", "");
+                if(PublicValues.title.equals("")) {
+                    if (data.contains("<title>")) {
+                        title = data.replace("<title>", "").replace("</title>", "").replace("Watch ", "");
+                    }
+                }else{
+                    title = PublicValues.title;
                 }
             }
             myReader.close();
         } catch (FileNotFoundException e) {
-            System.out.println("An error occurred.");
             e.printStackTrace();
         }
         hls = hls.replace("            \"hls\": \"", "").replace("\",","").replace(",.urlset", "").replace("/,", "/").replace("master.m3u8", "index-v1-a1.m3u8");
