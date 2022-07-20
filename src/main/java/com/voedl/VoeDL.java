@@ -10,7 +10,7 @@ public class VoeDL {
             if (args.length == 1) {
                 //if(args[0].equals("ui")) {
                 //    new MainWindow().init();
-                //}else {
+                //}else{
                 if(args[0].contains("https://v-o-e-unblock.com/")) {
                     new Downloader(args[0]);
                 }else{
