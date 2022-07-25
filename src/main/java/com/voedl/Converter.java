@@ -1,6 +1,5 @@
 package com.voedl;
 
-import com.voedl.ffmpeg.FFMPEG;
 import me.tongfei.progressbar.ProgressBar;
 import me.tongfei.progressbar.ProgressBarStyle;
 
@@ -13,7 +12,6 @@ import java.nio.file.StandardCopyOption;
 import java.text.DecimalFormat;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
-import java.util.Optional;
 import java.util.Scanner;
 
 public class Converter {
@@ -24,22 +22,6 @@ public class Converter {
     String[] forFiles = new String[] {};
     String downloadlocation = "down";
     File loc = new File(downloadlocation);
-    public Converter(String file, String contenturl) {
-        toconvert = new File(file);
-        streamurl = contenturl;
-        if(!loc.exists()) {
-            readFile();
-            if(PublicValues.debug) {
-                System.out.println(new Language().get("voedl.download.m3u8"));
-            }
-            download();
-        }
-        putTogether();
-        if(PublicValues.debug) {
-            System.out.println("Clean");
-        }
-        new Utils().clean();
-    }
     public Converter(String file, String contenturl, String tit) {
         title = tit;
         toconvert = new File(file);
@@ -128,8 +110,7 @@ public class Converter {
             if(PublicValues.debug) {
                 System.out.println("Windows");
             }
-            //winffmpeg(files);
-            experimental(files);
+            winffmpeg(files);
         }else{
             if(new Utils().OS().equals("MAC")) {
                 if (PublicValues.debug) {
@@ -143,9 +124,6 @@ public class Converter {
                 linuxffmpeg(files);
             }
         }
-    }
-    public void experimental(String files) {
-        new FFMPEG(files);
     }
     public void winffmpeg(String files) {
         if(PublicValues.debug) {
@@ -175,7 +153,19 @@ public class Converter {
         }
     }
     public void macffmpeg(String files) {
-
+        System.out.println(new Language().get("voedl.mac.experimental"));
+        try {
+            if(PublicValues.debug) {
+                System.out.println("/usr/local/bin/ffmpeg -i \"concat:" + files.replace("\\", "/") + "\" -c copy \"" + title + "\"");
+            }
+            ProcessBuilder processBuilder = new ProcessBuilder();
+            processBuilder.command("/usr/local/bin/ffmpeg", "-i \"concat:" + files.replace("\\", "/") + "\" -c copy \"" + title.replace("    ", "") + "\"");
+            Process process = processBuilder.start();
+            process.waitFor();
+            new Utils().clean();
+        }catch (IOException | InterruptedException ex) {
+            ex.printStackTrace();
+        }
     }
 }
 

@@ -1,7 +1,6 @@
 package com.voedl;
 
 import org.apache.commons.io.FileUtils;
-
 import java.io.File;
 import java.io.IOException;
 
@@ -52,7 +51,11 @@ public class Utils {
         if(OS().equals("WINDOWS")) {
             return System.getenv("PATH").toLowerCase().contains("ffmpeg");
         }else{
-            return new File("/usr/bin/ffmpeg").exists();
+            if(OS().equals("MAC")) {
+                return new File("/usr/local/bin/ffmpeg").exists();
+            }else {
+                return new File("/usr/bin/ffmpeg").exists();
+            }
         }
     }
 }

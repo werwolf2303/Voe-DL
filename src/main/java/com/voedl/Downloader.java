@@ -1,19 +1,10 @@
 package com.voedl;
 
-import net.lingala.zip4j.ZipFile;
-import net.lingala.zip4j.exception.ZipException;
 import org.apache.commons.io.IOUtils;
-
-
 import java.io.*;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
-import java.util.logging.Level;
 
 public class Downloader {
     String title = "";
@@ -40,11 +31,9 @@ public class Downloader {
         }
     }
     public void downloadM3U8(String url) throws IOException {
-        // https://delivery-node-bata.voe-network.net/hls/6oarme6g5a23cszcr3emzizpwvmo5ydm6co3jrdtjsw5cedefeb6wytq2jia/master.m3u8
         InputStream in = new URL(url).openStream();
         String content;
         System.out.println(new Language().get("voedl.download.index"));
-        boolean out = false;
         try {
             content = IOUtils.toString(in, StandardCharsets.UTF_8);
         } finally {

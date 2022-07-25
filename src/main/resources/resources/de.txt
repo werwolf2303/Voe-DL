@@ -1,6 +1,5 @@
 //Sprachdatei
 voedl.error.wrongurl:Falsche URL! Beispiel: https://v-o-e-unblock.com oder https://audaciousdefaulthouse.com
-voedl.mac.nosupport:Voe-DL wird bei einem Mac noch nicht unterstützt
 voedl.error.space:Voe-DL nicht genügend freier Speicherplatz! Minimum 3Gb
 voedl.ffmpeg.win.error:Voe-DL kann ffmpeg nicht finden! Installiere es bitte
 voedl.ffmpeg.linux.error:Voe-DL kann ffmpeg nicht finden! Installiere es bitte
@@ -11,3 +10,4 @@ voedl.convert:VoeDL Konvertiere Dateien
 voedl.error.wrongtitle:Titel muss Video Datei Name enthalten! Beispiel: .mp4
 voedl.download.index:Lade Webseite herunter
 voedl.error.exists:Das Video wurde schon heruntergeladen oder eine Datei mit dem Namen existiert bereits
+voedl.mac.experimental:Benutze MAC Support (Experimental)
