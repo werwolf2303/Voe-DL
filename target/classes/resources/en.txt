@@ -1,0 +1,13 @@
+//Language file
+voedl.error.wrongurl:Wrong URL! Expected 'v-o-e-unblock.com or audaciousdefaulthouse.com' But it was: [arg]
+voedl.mac.nosupport:Voe-DL is not supported on your mac yet
+voedl.error.space:Voe-DL has detected that your harddisk has not enough space! Minimum: 3Gb
+voedl.ffmpeg.win.error:Voe-DL Cant find ffmpeg, please install it on your windows system
+voedl.download.m3u8:Download M3U8 Playlist files
+voedl.download.info1:Files
+voedl.download.info2:Downloading...
+voedl.convert:VoeDL converts files
+voedl.download.index:Download Website
+voedl.error.wrongtitle:Title must include video extension! => .mp4
+voedl.error.exists:The Video was already downloaded or the name exists
+voedl.ffmpeg.linux.error:Voe-DL Cant find ffmpeg, please install it on your linux or unix system

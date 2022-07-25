@@ -1,6 +1,7 @@
 package com.voedl;
 
-import net.bramp.ffmpeg.FFmpeg;
+import me.tongfei.progressbar.ProgressBar;
+import me.tongfei.progressbar.ProgressBarStyle;
 
 import java.io.*;
 import java.net.MalformedURLException;
@@ -8,7 +9,9 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.Optional;
+import java.text.DecimalFormat;
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.Scanner;
 
 public class Converter {
@@ -19,26 +22,7 @@ public class Converter {
     String[] forFiles = new String[] {};
     String downloadlocation = "down";
     File loc = new File(downloadlocation);
-    OSTypes os;
-    public Converter(String file, String contenturl) {
-        os = OSTypes.valueOf(new DetectOS().OS());
-        toconvert = new File(file);
-        streamurl = contenturl;
-        if(!loc.exists()) {
-            readFile();
-            if(PublicValues.debug) {
-                System.out.println("Download M3U8 Playlist files");
-            }
-            download();
-        }
-        putTogether();
-        if(PublicValues.debug) {
-            System.out.println("Clean");
-        }
-        new Utils().clean();
-    }
     public Converter(String file, String contenturl, String tit) {
-        os = OSTypes.valueOf(new DetectOS().OS());
         title = tit;
         toconvert = new File(file);
         streamurl = contenturl;
@@ -92,27 +76,25 @@ public class Converter {
         if(!loc.exists()) {
             loc.mkdir();
         }
-        if(!PublicValues.debug) {
-            System.out.println("Please wait " + new UserName().get() + " VoeDL downloads files");
-        }
         int min = 1;
         int all = forFiles.length;
-        for(String s : forFiles) {
-            try {
-                if(PublicValues.debug) {
-                    System.out.println("Download " + min + " from " + all + " files");
+        try (ProgressBar pb = new ProgressBar(new Language().get("voedl.download.info2"), all, 1000, false, System.err, ProgressBarStyle.ASCII, " " + new Language().get("voedl.download.info1"), 1L, false, (DecimalFormat)null, ChronoUnit.SECONDS, 0L, Duration.ZERO)) {
+
+            for (String s : forFiles) {
+                try {
+                    min++;
+                    InputStream in = new URL(s).openStream();
+                    Files.copy(in, Paths.get(downloadlocation + "/" + s.split("/")[s.split("/").length - 1]), StandardCopyOption.REPLACE_EXISTING);
+                } catch (MalformedURLException url) {
+                    url.printStackTrace();
+                } catch (IOException e) {
                 }
-                min++;
-                InputStream in = new URL(s).openStream();
-                Files.copy(in, Paths.get(downloadlocation + "/" + s.split("/")[s.split("/").length-1]), StandardCopyOption.REPLACE_EXISTING);
-            }catch (MalformedURLException url) {
-                System.out.println("Invalid URL");
-                url.printStackTrace();
-            } catch (IOException e) {
+                pb.step();
             }
         }
     }
     public void putTogether() {
+        System.out.println(new Language().get("voedl.convert"));
         String files = "";
         int min = 1;
         int max = loc.listFiles().length;
@@ -124,16 +106,23 @@ public class Converter {
             }
             min++;
         }
-        if(new DetectOS().OS().equals("WINDOWS")) {
+        if(new Utils().OS().equals("WINDOWS")) {
             if(PublicValues.debug) {
                 System.out.println("Windows");
             }
             winffmpeg(files);
         }else{
-            if(PublicValues.debug) {
-                System.out.println("Linux");
+            if(new Utils().OS().equals("MAC")) {
+                if (PublicValues.debug) {
+                    System.out.println("MacOS");
+                }
+                macffmpeg(files);
+            }else {
+                if (PublicValues.debug) {
+                    System.out.println("Linux");
+                }
+                linuxffmpeg(files);
             }
-            linuxffmpeg(files);
         }
     }
     public void winffmpeg(String files) {
@@ -143,9 +132,10 @@ public class Converter {
         try {
             Process pr = Runtime.getRuntime().exec("cmd.exe /c start cmd.exe /c ffmpeg -i \"concat:" + files + "\" -c copy \"" + title + "\"");
             pr.waitFor();
-        }catch (IOException | InterruptedException ex) {
-            System.out.println("!!FAILURE!!");
+        }catch (IOException ex) {
             ex.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
     public void linuxffmpeg(String files) {
@@ -159,7 +149,21 @@ public class Converter {
             process.waitFor();
             new Utils().clean();
         }catch (IOException | InterruptedException ex) {
-            System.out.println("!!FAILURE!!");
+            ex.printStackTrace();
+        }
+    }
+    public void macffmpeg(String files) {
+        System.out.println(new Language().get("voedl.mac.experimental"));
+        try {
+            if(PublicValues.debug) {
+                System.out.println("/usr/local/bin/ffmpeg -i \"concat:" + files.replace("\\", "/") + "\" -c copy \"" + title + "\"");
+            }
+            ProcessBuilder processBuilder = new ProcessBuilder();
+            processBuilder.command("/usr/local/bin/ffmpeg", "-i \"concat:" + files.replace("\\", "/") + "\" -c copy \"" + title.replace("    ", "") + "\"");
+            Process process = processBuilder.start();
+            process.waitFor();
+            new Utils().clean();
+        }catch (IOException | InterruptedException ex) {
             ex.printStackTrace();
         }
     }

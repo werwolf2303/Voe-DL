@@ -1,36 +1,85 @@
 package com.voedl;
 
-import com.voedl.graphical.MainWindow;
-
+import net.lingala.zip4j.ZipFile;
+import net.lingala.zip4j.exception.ZipException;
 import java.io.File;
 
 public class VoeDL {
     public static void main(String[] args) {
-        if(new DetectFFMPEG().detect()) {
-            if (args.length == 1) {
-                //if(args[0].equals("ui")) {
-                //    new MainWindow().init();
-                //}else {
-                if(args[0].contains("https://v-o-e-unblock.com/")) {
-                    new Downloader(args[0]);
-                }else{
-                    System.out.println("Wrong URL Expected 'v-o-e-unblock.com' But it was: " + args[0]);
-                }
-                //}
-            } else {
-                if (args.length == 2) {
-                    PublicValues.debug = Boolean.parseBoolean(args[1]);
-                    new Downloader(args[0]);
-                } else {
+        boolean debug = false;
+        String title = "";
+        String url = "";
+        int count = 0;
+        if(!new File(".voetemp").exists()) {
+            String source = "Voe-DL.jar";
+            String destination = ".voetemp";
+            try {
+                ZipFile zipFile = new ZipFile(source);
+                zipFile.extractAll(destination);
+            } catch (ZipException e) {
+                e.printStackTrace();
+            }
+        }else{
+            new Utils().finalClean();
+            String source = "Voe-DL.jar";
+            String destination = ".voetemp";
+            try {
+                ZipFile zipFile = new ZipFile(source);
+                zipFile.extractAll(destination);
+            } catch (ZipException e) {
+                e.printStackTrace();
+            }
+        }
+        if(new Utils().enoughSpace()) {
+            if (new Utils().detectFFMPEG()) {
+                if(args.length==0) {
                     System.out.println(PublicValues.voe_usage);
+                    System.exit(1);
+                }else {
+                    if (!(args.length > 4)) {
+                        for (String s : args) {
+                            if (count == 0) {
+                                if (s.contains("https://audaciousdefaulthouse.com")) {
+                                    url = s;
+                                } else {
+                                    if (s.contains("https://v-o-e-unblock.com/")) {
+                                        url = s;
+                                    } else {
+                                        System.out.println(new Language().get("voedl.error.wrongurl").replace("[arg]", s));
+                                        System.exit(1);
+                                    }
+                                }
+                            }
+                            if (s.contains("--title")) {
+                                if (!args[count + 1].equals("--debug") && !args[count + 1].equals("--title")) {
+                                    title = args[count + 1];
+                                } else {
+                                    System.out.println(PublicValues.voe_usage);
+                                    System.exit(1);
+                                }
+                            }
+                            if (s.contains("--debug")) {
+                                debug = true;
+                            }
+                            count++;
+                        }
+                    } else {
+                        System.out.println(PublicValues.voe_usage);
+                        System.exit(1);
+                    }
+                }
+                PublicValues.debug = debug;
+                PublicValues.title = title;
+                new Downloader(url);
+            }else {
+                if (new Utils().OS().toLowerCase().contains("windows")) {
+                    System.out.println(new Language().get("voedl.ffmpeg.win.error"));
+                } else {
+                    System.out.println(new Language().get("voedl.ffmpeg.linux.error"));
                 }
             }
         }else{
-            if(new DetectOS().OS().toLowerCase().contains("windows")) {
-                System.out.println("Voe-DL Cant find ffmpeg, please install it on your windows system");
-            }else {
-                System.out.println("Voe-DL Cant find ffmpeg, please install it on your linux or unix system");
-            }
+            System.out.println(new Language().get("voedl.error.space"));
         }
     }
 }

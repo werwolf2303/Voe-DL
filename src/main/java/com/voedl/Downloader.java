@@ -1,22 +1,27 @@
 package com.voedl;
 
 import org.apache.commons.io.IOUtils;
-
-
 import java.io.*;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
-import java.util.logging.Level;
 
 public class Downloader {
     String title = "";
     public Downloader(String url) {
-        if(new File("down").exists()) {
+        if(!PublicValues.title.equals("")) {
+            if(!PublicValues.title.contains(".mp4")) {
+                System.out.println(new Language().get("voedl.error.wrongtitle"));
+                new Utils().finalClean();
+                System.exit(1);
+            }
+            if(new File(PublicValues.title).exists()) {
+                System.out.println(new Language().get("voedl.error.exists"));
+                new Utils().finalClean();
+                System.exit(1);
+            }
+        }
+        if (new File("down").exists()) {
             new Utils().clean();
         }
         try {
@@ -26,10 +31,9 @@ public class Downloader {
         }
     }
     public void downloadM3U8(String url) throws IOException {
-        // https://delivery-node-bata.voe-network.net/hls/6oarme6g5a23cszcr3emzizpwvmo5ydm6co3jrdtjsw5cedefeb6wytq2jia/master.m3u8
         InputStream in = new URL(url).openStream();
         String content;
-        boolean out = false;
+        System.out.println(new Language().get("voedl.download.index"));
         try {
             content = IOUtils.toString(in, StandardCharsets.UTF_8);
         } finally {
@@ -47,13 +51,16 @@ public class Downloader {
                 if(data.contains("\"hls\"")) {
                     hls = data;
                 }
-                if(data.contains("<title>")) {
-                    title = data.replace("<title>", "").replace("</title>", "").replace("Watch ", "");
+                if(PublicValues.title.equals("")) {
+                    if (data.contains("<title>")) {
+                        title = data.replace("<title>", "").replace("</title>", "").replace("Watch ", "");
+                    }
+                }else{
+                    title = PublicValues.title;
                 }
             }
             myReader.close();
         } catch (FileNotFoundException e) {
-            System.out.println("An error occurred.");
             e.printStackTrace();
         }
         hls = hls.replace("            \"hls\": \"", "").replace("\",","").replace(",.urlset", "").replace("/,", "/").replace("master.m3u8", "index-v1-a1.m3u8");
