@@ -39,15 +39,11 @@ public class VoeDL {
                     if (!(args.length > 4)) {
                         for (String s : args) {
                             if (count == 0) {
-                                if (s.contains("https://audaciousdefaulthouse.com")) {
+                                // url = s
+                                if(s.contains("/e/")) {
                                     url = s;
-                                } else {
-                                    if (s.contains("https://v-o-e-unblock.com/")) {
-                                        url = s;
-                                    } else {
-                                        System.out.println(new Language().get("voedl.error.wrongurl").replace("[arg]", s));
-                                        System.exit(1);
-                                    }
+                                }else{
+                                    System.out.println(new Language().get("voedl.error.wrongurl").replace("[arg]", s));
                                 }
                             }
                             if (s.contains("--title")) {

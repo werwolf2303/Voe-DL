@@ -20,7 +20,7 @@ public class Converter {
     String streamurl;
     String files = "";
     String[] forFiles = new String[] {};
-    String downloadlocation = "down";
+    String downloadlocation = ".down";
     File loc = new File(downloadlocation);
     public Converter(String file, String contenturl, String tit) {
         title = tit;
@@ -100,9 +100,9 @@ public class Converter {
         int max = loc.listFiles().length;
         while(!(min==max)) {
             if(files.equals("")) {
-                files = "down\\seg-" + min + "-v1-a1.ts";
+                files = ".down\\seg-" + min + "-v1-a1.ts";
             }else{
-                files = files+"|"+"down\\seg-" + min + "-v1-a1.ts";
+                files = files+"|"+".down\\seg-" + min + "-v1-a1.ts";
             }
             min++;
         }

@@ -21,7 +21,7 @@ public class Downloader {
                 System.exit(1);
             }
         }
-        if (new File("down").exists()) {
+        if (new File(".down").exists()) {
             new Utils().clean();
         }
         try {
