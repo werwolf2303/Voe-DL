@@ -11,3 +11,4 @@ voedl.error.wrongtitle:Titel muss Video Datei Name enthalten! Beispiel: .mp4
 voedl.download.index:Lade Webseite herunter
 voedl.error.exists:Das Video wurde schon heruntergeladen oder eine Datei mit dem Namen existiert bereits
 voedl.mac.experimental:Benutze MAC Support (Experimental)
+voedl.error.temp:Konnte temp Dateien nicht löschen!

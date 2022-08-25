@@ -1,6 +1,5 @@
 package com.voedl;
 
-import org.apache.commons.io.IOUtils;
 import java.io.*;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -34,17 +33,8 @@ public class Downloader {
         if(PublicValues.debug) {
             System.out.println("M3U8 Url: " + url);
         }
-        InputStream in = new URL(url).openStream();
-        String content;
         System.out.println(new Language().get("voedl.download.index"));
-        try {
-            content = IOUtils.toString(in, StandardCharsets.UTF_8);
-        } finally {
-            IOUtils.closeQuietly(in);
-        }
-        FileWriter writer = new FileWriter("tmp.txt");
-        writer.write(content);
-        writer.close();
+        new Legacy().UrlToFile(url, "tmp.txt");
         String hls = "";
         try {
             File myObj = new File("tmp.txt");
@@ -67,16 +57,7 @@ public class Downloader {
             e.printStackTrace();
         }
         hls = hls.replace("            \"hls\": \"", "").replace("\",","").replace(",.urlset", "").replace("/,", "/").replace("master.m3u8", "index-v1-a1.m3u8");
-        InputStream in2 = new URL(hls).openStream();
-        String content2;
-        try {
-            content2 = IOUtils.toString(in2, StandardCharsets.UTF_8);
-        } finally {
-            IOUtils.closeQuietly(in);
-        }
-        FileWriter writer1 = new FileWriter("master.m3u8");
-        writer1.write(content2);
-        writer1.close();
+        new Legacy().UrlToFile(hls, "master.m3u8");
         download(hls);
     }
     public void download(String hls) {

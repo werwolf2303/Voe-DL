@@ -1,23 +1,14 @@
 package com.voedl;
 
-import org.apache.commons.io.FileUtils;
 import java.io.File;
 import java.io.IOException;
 
 public class Utils {
     public void finalClean() {
-        try {
-            FileUtils.deleteDirectory(new File(".voetemp"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        new Legacy().deleteDirectory(".voetemp");
     }
     public void clean() {
-        try {
-            FileUtils.deleteDirectory(new File("down"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        new Legacy().deleteDirectory("down");
     }
     public File getFromResources(String file) {
         return new File(".voetemp/resources", file);

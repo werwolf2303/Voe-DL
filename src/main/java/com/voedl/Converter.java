@@ -3,7 +3,10 @@ package com.voedl;
 import me.tongfei.progressbar.ProgressBar;
 import me.tongfei.progressbar.ProgressBarStyle;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
@@ -112,71 +115,37 @@ public class Converter {
             }
             winffmpeg(files);
         }else{
-            if(new Utils().OS().equals("MAC")) {
-                if (PublicValues.debug) {
-                    System.out.println("MacOS");
-                }
-                macffmpeg(files);
-            }else {
-                if (PublicValues.debug) {
-                    System.out.println("Linux");
-                }
-                linuxffmpeg(files);
-            }
+            System.out.println("This version is only intended for use on Windows XP");
         }
     }
     public void winffmpeg(String files) {
-        if(PublicValues.debug) {
+        if (PublicValues.debug) {
             System.out.println("Files:" + files);
         }
-        if(!title.contains(".mp4")) {
-            title = title+".mp4";
+        if (!title.contains(".mp4")) {
+            title = title + ".mp4";
         }
-        if(PublicValues.debug) {
+        if (PublicValues.debug) {
             System.out.println("cmd.exe /c start cmd.exe /c ffmpeg -i \"concat:" + files + "\" -c copy \"" + title + "\"");
         }
         try {
-            Process pr = Runtime.getRuntime().exec("cmd.exe /c start cmd.exe /c ffmpeg -i \"concat:" + files + "\" -c copy \"" + title + "\"");
-            pr.waitFor();
-        }catch (IOException ex) {
+            new ProcessBuilder("cmd", "/c", "ffmpeg -i \"concat:" + files + "\"" + " -bsf:a aac_adtstoasc -c copy \"" + title + "\"").inheritIO().start().waitFor();
+        } catch (IOException ex) {
             ex.printStackTrace();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-    }
-    public void linuxffmpeg(String files) {
-        try {
-            if(PublicValues.debug) {
-                System.out.println("ffmpeg -i \"concat:" + files.replace("\\", "/") + "\" -c copy \"" + title + "\"");
-            }
-            if(!title.contains(".mp4")) {
-                title = title+".mp4";
-            }
-            ProcessBuilder processBuilder = new ProcessBuilder();
-            processBuilder.command("bash", "-c", "ffmpeg -i \"concat:" + files.replace("\\", "/") + "\" -c copy \"" + title.replace("    ", "") + "\"");
-            Process process = processBuilder.start();
-            process.waitFor();
-            new Utils().clean();
-        }catch (IOException | InterruptedException ex) {
-            ex.printStackTrace();
+        if(new File("down").exists()) {
+            new Legacy().deleteDirectory("down");
         }
-    }
-    public void macffmpeg(String files) {
-        System.out.println(new Language().get("voedl.mac.experimental"));
-        try {
-            if(PublicValues.debug) {
-                System.out.println("/usr/local/bin/ffmpeg -i \"concat:" + files.replace("\\", "/") + "\" -c copy \"" + title + "\"");
+        int loopcount = 0;
+        while(new File(".voetemp").exists()) {
+            if(loopcount>5) {
+                System.out.println("Failed to delete temp files");
+                break;
             }
-            if(!title.contains(".mp4")) {
-                title = title+".mp4";
-            }
-            ProcessBuilder processBuilder = new ProcessBuilder();
-            processBuilder.command("/usr/local/bin/ffmpeg", "-i \"concat:" + files.replace("\\", "/") + "\" -c copy \"" + title.replace("    ", "") + "\"");
-            Process process = processBuilder.start();
-            process.waitFor();
-            new Utils().clean();
-        }catch (IOException | InterruptedException ex) {
-            ex.printStackTrace();
+            new Legacy().deleteDirectory(".voetemp");
+            loopcount++;
         }
     }
 }

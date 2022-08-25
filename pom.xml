@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.example</groupId>
-    <artifactId>VOE-DL</artifactId>
+    <artifactId>LegacyVoeDL</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <properties>
@@ -15,30 +15,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>2.11.0</version>
-        </dependency>
-        <dependency>
             <groupId>me.tongfei</groupId>
             <artifactId>progressbar</artifactId>
             <version>0.9.3</version>
         </dependency>
-        <dependency>
-            <groupId>com.github.kokorin.jaffree</groupId>
-            <artifactId>jaffree</artifactId>
-            <version>2022.06.03</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>1.7.25</version>
-        </dependency>
-        <dependency>
-            <groupId>net.lingala.zip4j</groupId>
-            <artifactId>zip4j</artifactId>
-            <version>2.10.0</version>
-        </dependency>
     </dependencies>
-
 </project>

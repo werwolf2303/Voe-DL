@@ -11,3 +11,4 @@ voedl.error.wrongtitle:Title must include video extension! => .mp4
 voedl.error.exists:The Video was already downloaded or the name exists
 voedl.ffmpeg.linux.error:Voe-DL Cant find ffmpeg, please install it on your linux or unix system
 voedl.mac.experimental:Use experimental MAC support!
+voedl.error.temp:Failed to delete temp files!
