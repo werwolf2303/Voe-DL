@@ -20,7 +20,7 @@ public class Converter {
     String streamurl;
     String files = "";
     String[] forFiles = new String[] {};
-    String downloadlocation = ".down";
+    String downloadlocation = "down";
     File loc = new File(downloadlocation);
     public Converter(String file, String contenturl, String tit) {
         title = tit;
@@ -100,9 +100,9 @@ public class Converter {
         int max = loc.listFiles().length;
         while(!(min==max)) {
             if(files.equals("")) {
-                files = ".down\\seg-" + min + "-v1-a1.ts";
+                files = "down\\seg-" + min + "-v1-a1.ts";
             }else{
-                files = files+"|"+".down\\seg-" + min + "-v1-a1.ts";
+                files = files+"|"+"down\\seg-" + min + "-v1-a1.ts";
             }
             min++;
         }
@@ -129,6 +129,12 @@ public class Converter {
         if(PublicValues.debug) {
             System.out.println("Files:" + files);
         }
+        if(!title.contains(".mp4")) {
+            title = title+".mp4";
+        }
+        if(PublicValues.debug) {
+            System.out.println("cmd.exe /c start cmd.exe /c ffmpeg -i \"concat:" + files + "\" -c copy \"" + title + "\"");
+        }
         try {
             Process pr = Runtime.getRuntime().exec("cmd.exe /c start cmd.exe /c ffmpeg -i \"concat:" + files + "\" -c copy \"" + title + "\"");
             pr.waitFor();
@@ -142,6 +148,9 @@ public class Converter {
         try {
             if(PublicValues.debug) {
                 System.out.println("ffmpeg -i \"concat:" + files.replace("\\", "/") + "\" -c copy \"" + title + "\"");
+            }
+            if(!title.contains(".mp4")) {
+                title = title+".mp4";
             }
             ProcessBuilder processBuilder = new ProcessBuilder();
             processBuilder.command("bash", "-c", "ffmpeg -i \"concat:" + files.replace("\\", "/") + "\" -c copy \"" + title.replace("    ", "") + "\"");
@@ -157,6 +166,9 @@ public class Converter {
         try {
             if(PublicValues.debug) {
                 System.out.println("/usr/local/bin/ffmpeg -i \"concat:" + files.replace("\\", "/") + "\" -c copy \"" + title + "\"");
+            }
+            if(!title.contains(".mp4")) {
+                title = title+".mp4";
             }
             ProcessBuilder processBuilder = new ProcessBuilder();
             processBuilder.command("/usr/local/bin/ffmpeg", "-i \"concat:" + files.replace("\\", "/") + "\" -c copy \"" + title.replace("    ", "") + "\"");

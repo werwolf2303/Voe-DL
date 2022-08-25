@@ -43,7 +43,11 @@ public class VoeDL {
                                 if(s.contains("/e/")) {
                                     url = s;
                                 }else{
-                                    System.out.println(new Language().get("voedl.error.wrongurl").replace("[arg]", s));
+                                    if(s.contains("voe.sx")) {
+                                        url = s;
+                                    }else {
+                                        System.out.println(new Language().get("voedl.error.wrongurl").replace("[arg]", s));
+                                    }
                                 }
                             }
                             if (s.contains("--title")) {

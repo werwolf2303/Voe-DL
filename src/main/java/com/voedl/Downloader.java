@@ -21,7 +21,7 @@ public class Downloader {
                 System.exit(1);
             }
         }
-        if (new File(".down").exists()) {
+        if (new File("down").exists()) {
             new Utils().clean();
         }
         try {
@@ -31,6 +31,9 @@ public class Downloader {
         }
     }
     public void downloadM3U8(String url) throws IOException {
+        if(PublicValues.debug) {
+            System.out.println("M3U8 Url: " + url);
+        }
         InputStream in = new URL(url).openStream();
         String content;
         System.out.println(new Language().get("voedl.download.index"));
